@@ -1,7 +1,7 @@
 # Git SSH Assignment
 2025-04-09
 ## Author
-#Anastasiya Pautarak
+# Anastasiya Pautarak
 
 
 ---
@@ -12,8 +12,8 @@ In this section, I worked within the **WSL** environment.
 As a first step, I configured Git by setting my user information.  
 Then, I checked whether I already had any existing SSH keys. After confirming, I generated a new SSH key pair and added the private key to the SSH agent.
 
-Next, I copied the **public key** and added it to my GitHub account under the _SSH and GPG keys_ section.  
-After completing the setup, I tested the connection and successfully authenticated with my GitHub profile via SSH.
+Next, I copied the **public key** and added it to my GitHub account under the _SSH_ section.  
+After completing the setup, I tested the connection and successfully authenticated with my GitHub profile by SSH.
 
 This allows me to securely interact with my repositories directly from the WSL terminal.
 
@@ -48,18 +48,18 @@ Hi anastasiyapautarak! etc
 ### Basic Workflow
 - `git status` – Check the current state of your working directory
 - `git add .` – Stage all changes
-- `git commit -m "Message"` – Commit staged changes with a message
+- `git commit -m "etc"` – Commit staged changes with a message
 - `git push` – Push local commits to GitHub
 - `git pull` – Fetch and merge changes from GitHub
-
+- `git log` -  It provides several formatting options for displaying committed snapshots.
+- `git reflog` - This allows you to go back to changesets even though they are not referenced by any branch or tag.
 ---
 
 ## Git Pull, Merge & Conflicts
 
-### git pull` – !Anastasiya, its so important
+### git pull – !its so important!
 - Downloads changes from a remote repository (`origin`)
-- By default, it performs an automatic `merge`
-- Command syntax:
+- By default, an automatic `merge`
   ```bash
   git pull origin main
   ```
