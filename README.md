@@ -75,6 +75,11 @@ mkdir git-ssh-assignment
 cd git-ssh-assignment
 git init
 ```
+### Connecting to GitHub:
+```bash
+git remote add origin git@github.com:anastasiyapautarak/git-ssh-assignment.git
+git push -u origin master
+```
 ### Creating and Pushing README:
 ```bash
 echo "# Git SSH Assignment
@@ -108,22 +113,17 @@ Git sees every file in your working copy as one of three things:
 3. ignored - a file which Git has been explicitly told to ignore.
 
 Ignored files are usually build artifacts and machine generated files that can be deri>```bash
-# Ignoruj pliki tymczasowe
+#### Ignoruj pliki tymczasowe
 *.log
 *.tmp
 *.swp
 
-# Ignoruj katalogi
+#### Ignoruj katalogi
 __pycache__/
 build/
 output/
 
-# Ignoruj konkretne pliki
+#### Ignoruj konkretne pliki
 secret_config.json```
-### Connecting to GitHub:
-```bash
-git remote add origin git@github.com:anastasiyapautarak/git-ssh-assignment.git
-git push -u origin master
-```
 ---
 This README is my helper(^^:))
