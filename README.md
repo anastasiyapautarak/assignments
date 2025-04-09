@@ -1,7 +1,7 @@
 # Git SSH Assignment
 2025-04-09
 ## Author
-# Anastasiya Pautarak
+Anastasiya Pautarak
 
 
 ---
@@ -50,7 +50,6 @@ Hi anastasiyapautarak! etc
 - `git add .` – Stage all changes
 - `git commit -m "etc"` – Commit staged changes with a message
 - `git push` – Push local commits to GitHub
-- `git pull` – Fetch and merge changes from GitHub
 - `git log` -  It provides several formatting options for displaying committed snapshots.
 - `git reflog` - This allows you to go back to changesets even though they are not referenced by any branch or tag.
 ---
@@ -70,7 +69,7 @@ Hi anastasiyapautarak! etc
 ### How Merge Works
 - `git merge branch-name` – Merges changes from another branch into the current one
 
-### Repository Initialization and Setup:
+### Repository Initialization and Setup (I dont remember about this always):
 ```bash
 mkdir git-ssh-assignment
 cd git-ssh-assignment
@@ -85,14 +84,7 @@ cat README.md
 git add README.md
 git commit -m "init readme"
 ```
-
-### Connecting to GitHub:
-```bash
-git remote add origin git@github.com:anastasiyapautarak/git-ssh-assignment.git
-git push -u origin master
-```
-
-## Best Practices for Merging
+## Merging
 
 - **Always pull before you push**
 - Make **frequent, small commits** – easier to track and resolve
@@ -104,5 +96,34 @@ git push -u origin master
   instead of `git pull` for more control over the process
 
 ---
-This README is my future self’s best friend(^^:))
+---
 
+## Always remember about **gitignore**
+Git sees every file in your working copy as one of three things:
+
+1. tracked - a file which has been previously staged or committed;
+
+2. untracked - a file which has not been staged or committed; or
+
+3. ignored - a file which Git has been explicitly told to ignore.
+
+Ignored files are usually build artifacts and machine generated files that can be deri>```bash
+# Ignoruj pliki tymczasowe
+*.log
+*.tmp
+*.swp
+
+# Ignoruj katalogi
+__pycache__/
+build/
+output/
+
+# Ignoruj konkretne pliki
+secret_config.json```
+### Connecting to GitHub:
+```bash
+git remote add origin git@github.com:anastasiyapautarak/git-ssh-assignment.git
+git push -u origin master
+```
+---
+This README is my helper(^^:))
