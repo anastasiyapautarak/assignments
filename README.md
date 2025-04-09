@@ -112,18 +112,21 @@ Git sees every file in your working copy as one of three things:
 
 3. ignored - a file which Git has been explicitly told to ignore.
 
-Ignored files are usually build artifacts and machine generated files that can be deri>```bash
+Ignored files are usually build artifacts and machine generated files that can be deri>
+```bash
 #### Ignoruj pliki tymczasowe
-*.log
-*.tmp
-*.swp
+`*.log`
+`*.tmp`
+`*.swp`
 
 #### Ignoruj katalogi
-__pycache__/
-build/
-output/
+`__pycache__/`
+`build/`
+`output/`
 
 #### Ignoruj konkretne pliki
-secret_config.json```
+`secret_config.json`
+```
+---
 ---
 This README is my helper(^^:))
