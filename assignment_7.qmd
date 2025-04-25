@@ -1,0 +1,84 @@
+---
+title: "Assignment 7"
+author: "Anastasiya Pautarak"
+format: html
+editor: visual
+---
+
+# **Analysis of the Iris Dataset using tidyverse**
+
+This report demonstrates how to use tidyverse for reshaping and analyzing the iris dataset.
+
+## Libraries:
+
+Load the tidyverse package which includes dplyr, tidyr, readr, ggplot2, ..., etc.
+
+```{r}
+library(tidyverse)
+
+```
+
+## Task 1: Transform the dataset into long format:
+
+Reshape the data so that each measurement trait becomes a row instead of a column.
+
+1.  Load iris dataset and pivot to long format
+
+2.  View the reshaped data : `head(iris_long)`
+
+3.  Now we will have three columns in the table: Species, Trait, Size
+
+```{r}
+iris_long <- iris %>%
+  pivot_longer(cols = -Species, # transform all columns except Species
+               names_to = "Trait",
+               values_to = "Size")
+head(iris_long)
+
+```
+
+## Task 2.1: Mean length and width for each species and trait
+
+-   To calculate the length or width for each trait within each species.
+
+```{r}
+iris_long %>%
+  group_by(Species, Trait) %>%
+  summarize(MeanSize = mean(Size), .groups = "drop")
+
+```
+
+## Task 2.2: Largest and widest petals and sepals for *virginica* and *versicolor*
+
+-   filter for virginica and versicolor species and find the maximum size per trait
+
+-   keep only the two species
+
+```{r}
+iris_long %>%
+  filter(Species %in% c("virginica", "versicolor")) %>%
+  group_by(Species, Trait) %>%
+  summarize(MaxSize = max(Size), .groups = "drop")
+```
+
+## Task 2.3: Count how many observations are above the mean
+
+1.  Step 1: Add the group mean as a new column
+
+```{r}
+iris_above_mean <- iris_long %>%
+  group_by(Species, Trait) %>%
+  mutate(MeanSize = mean(Size),
+         Above_Mean = Size > MeanSize)
+```
+
+2.  Step 2: Count how many are above mean
+
+-   Join mean values to original data
+-   Create a new column(T/F)
+
+```{r}
+iris_above_mean %>%
+  group_by(Species, Trait) %>%
+  summarize(Count_Above_Mean = sum(Above_Mean), .groups = "drop")
+```
