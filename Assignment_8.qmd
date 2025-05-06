@@ -1,0 +1,173 @@
+---
+title: "Assignment 8: Visualizing Napoleon's 1812 Campaign"
+author: "Anastasiya Pautarak"
+format:
+  html:
+    embed-resources: true
+    self-contained-math: true
+editor: visual
+---
+
+## Introduction
+
+The goal of this assignment is to visualize Napoleon's 1812 military campaign in Russia using spatial data, temperature records, and troop counts. The analysis uses three datasets:
+
+-   `troops.txt`,
+
+-   `cities.txt`,
+
+-   `temps.txt`.
+
+## Problems:
+
+My first version of the Napoleon campaign graphic was quite minimal and somewhat hard to read. Although I discussed improvements for both major plots in **Assignment 6**, I still feel that the Napoleon plot remains underdeveloped in terms of visual clarity and data storytelling. In this assignment, I aim to address those shortcomings by improving both the layout and the interpretability of the visualization.
+
+1.  My previous code of this plot:
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(ggrepel)
+library(pander)
+
+cities <- read.table("cities.txt", header = TRUE, stringsAsFactors = FALSE)
+troops <- read.table("troops.txt", header = TRUE, stringsAsFactors = FALSE)
+temps <- read.table("temps.txt", header = TRUE, stringsAsFactors = FALSE) %>%
+  mutate(date = dmy(date))
+
+#join cities + temperatures + survivors
+cities <- cities %>%
+  left_join(temps, by = "long") %>%
+  left_join(troops %>% select(long, lat, survivors), by = c("long", "lat"))
+
+ggplot() +
+  geom_path(data = troops, aes(x = long, y = lat, group = group,
+                               color = direction, size = survivors),
+            lineend = "round") +
+  geom_point(data = cities, aes(x = long, y = lat),
+             color = "#DC5B44") +
+  geom_text_repel(data = cities, aes(x = long, y = lat, label = city),
+                  color = "#DC5B44", family = "sans", size = 3.5) +
+  #temperature optional, not recommended to include on the map
+  geom_text(data = cities, aes(x = long, y = lat, label = temp),
+            color = "blue", size = 3, vjust = -1) +
+  scale_size(range = c(0.5, 15)) +
+  scale_colour_manual(values = c("A" = "#DFC17E", "R" = "#252523")) +
+  labs(title = "Napoleon",
+       x = "Longitude", y = "Latitude") +
+  guides(color = FALSE, size = FALSE) +
+  theme_minimal()
+
+ggplot(cities, aes(x = reorder(city, -survivors), y = survivors, fill = temp)) +
+  geom_col() +
+  scale_fill_gradient2(low = "blue", mid = "gray", high = "red", midpoint = 0) +
+  coord_flip() +
+  labs(title = "Survivors vs. Temperature in Cities",
+       x = "City", y = "Number of People", fill = "Temp (°C)") +
+  theme_minimal()
+
+```
+
+**Required libraries:**
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(ggrepel)
+library(fuzzyjoin)
+library(plotly)
+```
+
+## Data Import
+
+We begin by importing the three datasets and formatting the temperature dates.
+
+```{r}
+cities <- read.table("cities.txt", header = TRUE, stringsAsFactors = FALSE)
+troops <- read.table("troops.txt", header = TRUE, stringsAsFactors = FALSE)
+temps  <- read.table("temps.txt", header = TRUE, stringsAsFactors = FALSE) %>%
+  mutate(date = dmy(date))
+
+```
+
+## Fuzzy Join: Matching Cities to Troop Positions
+
+To associate cities with nearby troop coordinates, we use a fuzzy join with a small tolerance (0.2 degrees) for matching latitude and longitude.
+
+```{r}
+cities_fuzzy <- fuzzy_inner_join(
+  cities, 
+  troops %>% select(long, lat, survivors),
+  by = c("long" = "long", "lat" = "lat"),
+  match_fun = list(~abs(.x - .y) <= 0.2, ~abs(.x - .y) <= 0.2)
+)
+```
+
+## Merging Temperature Data
+
+Now we merge the fuzzy-joined city-troop data with the temperature dataset.
+
+```{r}
+cities_fuzzy <- cities_fuzzy %>%
+  left_join(temps, by = c("long.x" = "long")) %>%
+  rename(
+    city = city,
+    long = long.x,
+    lat = lat.x,
+    survivors = survivors,
+    temp = temp
+  )
+```
+
+## Survivors vs. Temperature (Fuzzy Join)
+
+This plot explores the relationship between the number of survivors in Napoleon's army and the temperature in various cities along the campaign route. The data was prepared using a **fuzzy join** to associate approximate locations of cities with temperature and survivor counts.
+
+*Code down:*
+
+```{r}
+p1 <- cities_fuzzy %>%
+  filter(!is.na(survivors), !is.na(temp)) %>%
+  ggplot(aes(
+    x = reorder(city, -survivors),
+    y = survivors,
+    fill = temp,
+    text = paste("City:", city, "<br>Survivors:", survivors, "<br>Temp:", temp, "°C")
+  )) +
+  geom_col() +
+  scale_fill_gradient2(low = "blue", mid = "gray", high = "red", midpoint = 0) +
+  coord_flip() +
+  labs(
+    title = "Survivors vs. Temperature (fuzzy join)",
+    x = "City",
+    y = "Number of Survivors",
+    fill = "Temp (°C)"
+  ) +
+  theme_minimal()
+ggplotly(p1, tooltip = "text")
+
+```
+
+## Visualization: Napoleon's March
+
+This static plot shows troop movement paths with direction, survivor counts, and city names.
+
+```{r}
+p2 <- ggplot() +
+  geom_path(data = troops, aes(x = long, y = lat, group = group,
+                               color = direction, linewidth = survivors),
+            lineend = "round") +
+  geom_point(data = cities, aes(x = long, y = lat),
+             color = "#B04532") +
+  geom_text_repel(data = cities, aes(x = long, y = lat, label = city),
+                  color = "#B04532", family = "sans", size = 3.5) +
+  scale_linewidth(range = c(0.9, 8)) +
+  scale_colour_manual(values = c("A" = "#DFC17E", "R" = "#C0C0C0")) +
+  labs(title = "Napoleon's 1812 March Route",
+       x = "Longitude", y = "Latitude") +
+  guides(color = "none", linewidth = "none") +
+  theme_minimal()
+p2
+```
+
+## 
